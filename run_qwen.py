@@ -14,7 +14,7 @@ model = AutoModelForCausalLM.from_pretrained(
 
 # 2. Load dataset
 try:
-    with open("web_pentest_dataset.json", "r", encoding="utf-8") as f:
+    with open("data/web_pentest_dataset.json", "r", encoding="utf-8") as f:
         dataset = json.load(f)
 except FileNotFoundError:
     print("Không tìm thấy file dataset. Hãy đảm bảo bạn đã lưu file JSON.")
@@ -61,11 +61,27 @@ for i, sample in enumerate(dataset[:3]): # Test thử 3 mẫu đầu
     )
 
     # Cắt bỏ phần input (prompt) khỏi output
-    response = tokenizer.decode(
-    generated_ids[0],
-    skip_special_tokens=True
-)
+    # 1. Tokenize input
+    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
 
+# 2. Generate
+    generated_ids = model.generate(
+    **model_inputs,
+    max_new_tokens=512
+    )
+
+    # 3. CẮT TOKEN THỦ CÔNG (Cách an toàn nhất)
+    # Lấy độ dài của input ban đầu
+    input_len = model_inputs.input_ids.shape[1] 
+
+    # Chỉ lấy các token từ vị trí input_len trở đi (tức là phần mới sinh)
+    generated_ids_trimmed = generated_ids[:, input_len:] 
+
+    # 4. Decode
+    response = tokenizer.decode(generated_ids_trimmed[0], skip_special_tokens=True)
+
+    print(response) 
+    # Lúc này response chỉ chứa đúng phần JSON sạch sẽ.
 
     print(f"\n{'='*20} Sample {i+1} {'='*20}")
     print(f"Input Code: {input_text[:50]}...") # In gọn input
