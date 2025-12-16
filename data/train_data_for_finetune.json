@@ -1,0 +1,802 @@
+[
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the following Python code snippet and identify the security vulnerability.\n\nInput to analyze:\nquery = \"SELECT * FROM users WHERE username = '\" + username + \"' AND password = '\" + password + \"'\"\ncursor.execute(query)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"SQL Injection\", \"explanation\": \"The code directly concatenates user input into a SQL query string without sanitization or parameterization, allowing an attacker to manipulate the query structure.\", \"example_payload\": \"' OR '1'='1\", \"mitigation\": \"Use parameterized queries (prepared statements) instead of string concatenation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this HTTP request parameter usage.\n\nInput to analyze:\nGET /search.php?query=<script>alert(1)</script> HTTP/1.1\nHost: example.com"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Reflected Cross-Site Scripting (XSS)\", \"explanation\": \"The application reflects the user input from the 'query' parameter directly into the HTTP response without proper encoding, allowing execution of malicious JavaScript.\", \"example_payload\": \"<script>alert(document.cookie)</script>\", \"mitigation\": \"Output encode user input according to the context (HTML, JavaScript, CSS) and validate input on arrival.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the following PHP code for security flaws.\n\nInput to analyze:\n$file = $_GET['page'];\ninclude($file . '.php');"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Local File Inclusion (LFI) / Path Traversal\", \"explanation\": \"The application includes a file based on user input without validation, potentially allowing an attacker to access sensitive files on the server.\", \"example_payload\": \"../../../../etc/passwd\", \"mitigation\": \"Validate input against a whitelist of allowed filenames and disable 'allow_url_include' in PHP configuration.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the command execution logic in this Node.js snippet.\n\nInput to analyze:\nconst { exec } = require('child_process');\napp.get('/ping', (req, res) => {\n  exec('ping -c 1 ' + req.query.ip, (err, stdout) => {\n    res.send(stdout);\n  });\n});"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"OS Command Injection\", \"explanation\": \"User input is concatenated directly into a system shell command, allowing an attacker to append arbitrary commands.\", \"example_payload\": \"127.0.0.1; cat /etc/passwd\", \"mitigation\": \"Avoid using shell execution functions; use language-specific APIs or validate input to ensure it is strictly an IP address.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Check the following XML parsing configuration.\n\nInput to analyze:\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE foo [\n  <!ELEMENT foo ANY >\n  <!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]>\n<foo>&xxe;</foo>"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"XML External Entity (XXE) Injection\", \"explanation\": \"The XML parser is configured to process external entities, allowing an attacker to read local files or perform SSRF.\", \"example_payload\": \"<!ENTITY xxe SYSTEM \\\"file:///etc/passwd\\\">\", \"mitigation\": \"Disable DTD processing and external entity resolution in the XML parser configuration.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this user profile access pattern.\n\nInput to analyze:\nGET /api/users/1005/profile HTTP/1.1\nCookie: session_id=abc12345 (User is ID 1001)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Insecure Direct Object Reference (IDOR)\", \"explanation\": \"The application allows access to user objects based on the ID in the URL without verifying if the currently logged-in user is authorized to view that specific ID.\", \"example_payload\": \"/api/users/1/profile\", \"mitigation\": \"Implement proper access control checks to ensure the session owner matches the requested resource owner.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the following template code.\n\nInput to analyze:\ntemplate = 'Hello ' + request.args.get('name')\nreturn render_template_string(template)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Server-Side Template Injection (SSTI)\", \"explanation\": \"User input is concatenated into a template string and evaluated by the template engine, allowing code execution.\", \"example_payload\": \"{{7*7}}\", \"mitigation\": \"Pass user input as template context variables rather than concatenating it into the template string.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the URL handling in this feature.\n\nInput to analyze:\nGET /proxy?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Server-Side Request Forgery (SSRF)\", \"explanation\": \"The application fetches a URL provided by the user, allowing access to internal network services or cloud instance metadata.\", \"example_payload\": \"http://localhost:22\", \"mitigation\": \"Validate and sanitize the URL; use an allowlist of permitted domains/IPs; block requests to private IP ranges.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the security flaw in this state-changing request.\n\nInput to analyze:\nPOST /account/change-password HTTP/1.1\nContent-Type: application/x-www-form-urlencoded\nCookie: session=valid_session\n\nnew_password=hacker123"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Cross-Site Request Forgery (CSRF)\", \"explanation\": \"The request lacks a unique anti-CSRF token, meaning an attacker could trick a logged-in user into submitting this request unknowingly.\", \"example_payload\": \"<form action=\\\"/change-password\\\" method=\\\"POST\\\"><input name=\\\"new_password\\\" value=\\\"pwned\\\"></form>\", \"mitigation\": \"Implement anti-CSRF tokens (synchronizer tokens) for all state-changing requests.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze this JavaScript code snippet.\n\nInput to analyze:\nvar search = new URLSearchParams(window.location.search);\ndocument.getElementById('results').innerHTML = search.get('q');"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"DOM-based Cross-Site Scripting (XSS)\", \"explanation\": \"The application reads data from the URL and writes it to the DOM using `innerHTML`, which executes HTML/JS tags.\", \"example_payload\": \"<img src=x onerror=alert(1)>\", \"mitigation\": \"Use `innerText` or `textContent` instead of `innerHTML`, or sanitize HTML input using a library like DOMPurify.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this SQL query construction.\n\nInput to analyze:\n$id = $_GET['id'];\n$query = \"SELECT title, content FROM posts WHERE id = \" . $id;"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"SQL Injection (Union-Based)\", \"explanation\": \"The ID parameter is unquoted and directly appended, allowing UNION injection to retrieve data from other tables.\", \"example_payload\": \"1 UNION SELECT username, password FROM users\", \"mitigation\": \"Use prepared statements.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the file upload functionality.\n\nInput to analyze:\nPOST /upload.php HTTP/1.1\nContent-Disposition: form-data; name=\"file\"; filename=\"shell.php\"\n\n<?php system($_GET['cmd']); ?>"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Unrestricted File Upload\", \"explanation\": \"The server accepts executable files (like .php) without validation, allowing remote code execution.\", \"example_payload\": \"filename=\\\"exploit.php\\\"\", \"mitigation\": \"Validate file extensions (allowlist), check MIME types, rename files upon storage, and store them outside the web root.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review this redirect logic.\n\nInput to analyze:\nGET /login?next=http://evil.com HTTP/1.1"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Open Redirect\", \"explanation\": \"The application redirects the user to an arbitrary URL specified in the 'next' parameter, facilitating phishing attacks.\", \"example_payload\": \"/login?next=//phishing-site.com\", \"mitigation\": \"Validate the redirect URL to ensure it is relative or belongs to a whitelist of trusted domains.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the usage of deserialization.\n\nInput to analyze:\nimport pickle\ndata = request.args.get('data')\nobj = pickle.loads(base64.b64decode(data))"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Insecure Deserialization\", \"explanation\": \"Python's `pickle` module allows execution of arbitrary code during deserialization of untrusted data.\", \"example_payload\": \"(Generated pickle payload executing os.system)\", \"mitigation\": \"Avoid deserializing untrusted data; use safe formats like JSON instead of Pickle/Java Serialization.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Check the authentication logic.\n\nInput to analyze:\nif user_provided_password == \"admin123\":\n    login_user()"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Hardcoded Credentials\", \"explanation\": \"Passwords are hardcoded in the source code, making them easy to discover via static analysis.\", \"example_payload\": \"N/A (Code review finding)\", \"mitigation\": \"Store credentials securely in environment variables or a secrets manager.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the flaw in this MongoDB query.\n\nInput to analyze:\ndb.collection('users').find({ 'username': req.body.username, 'password': req.body.password })"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"NoSQL Injection\", \"explanation\": \"If the body contains objects (like `$ne: null`) instead of strings, the authentication logic can be bypassed.\", \"example_payload\": \"{\\\"username\\\": \\\"admin\\\", \\\"password\\\": {\\\"$ne\\\": null}}\", \"mitigation\": \"Sanitize input to ensure expected types (strings) or use libraries that enforce schema definitions.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the HTTP headers in this response.\n\nInput to analyze:\nHTTP/1.1 200 OK\nX-Powered-By: PHP/7.4.1\nServer: Apache/2.4.41 (Ubuntu)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Security Misconfiguration (Banner Grabbing)\", \"explanation\": \"The server leaks specific version information via headers, helping attackers choose specific exploits.\", \"example_payload\": \"N/A (Passive reconnaissance)\", \"mitigation\": \"Configure the web server to suppress version banners and 'X-Powered-By' headers.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the logic for handling a coupon code.\n\nInput to analyze:\nfinal_price = item_price * quantity\nif (quantity > 0): process_payment()"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Integer Overflow / Logic Flaw\", \"explanation\": \"If `quantity` is not capped, an overflow could occur, or business logic might fail to check realistic upper bounds.\", \"example_payload\": \"quantity=99999999\", \"mitigation\": \"Enforce strict maximum limits on quantity inputs and use safe math libraries if applicable.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze this directory access request.\n\nInput to analyze:\nGET /.git/HEAD HTTP/1.1"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Sensitive Data Exposure (.git)\", \"explanation\": \"The `.git` directory is exposed to the public, allowing attackers to download the source code and history.\", \"example_payload\": \"wget -r http://target/.git/\", \"mitigation\": \"Configure the web server to deny access to hidden directories like `.git` or `.env`.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this JWT implementation.\n\nInput to analyze:\neyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"JWT 'None' Algorithm Bypass\", \"explanation\": \"The token uses the 'none' algorithm in the header, which might be accepted by the backend, allowing signature bypass.\", \"example_payload\": \"(Modified JWT with alg: none and no signature)\", \"mitigation\": \"Configure the JWT verification library to reject the 'none' algorithm strictly.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the HTML output generation.\n\nInput to analyze:\n<a href=\"<?php echo $_GET['link']; ?>\">Click here</a>"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Reflected XSS (Attribute Context)\", \"explanation\": \"User input is placed inside an `href` attribute. An attacker can use the `javascript:` pseudo-protocol.\", \"example_payload\": \"javascript:alert(1)\", \"mitigation\": \"Validate that the link starts with `http://` or `https://` and attribute-encode the output.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the XML parser code.\n\nInput to analyze:\nDocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n// Missing setFeature calls\nDocumentBuilder db = dbf.newDocumentBuilder();\ndb.parse(new InputSource(new StringReader(xmlInput)));"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"XXE Injection (Java)\", \"explanation\": \"The `DocumentBuilderFactory` is not configured to disable external entities (DOCTYPE/general entities).\", \"example_payload\": \"<!DOCTYPE root [<!ENTITY xxe SYSTEM 'file:///etc/hosts'>]>\", \"mitigation\": \"Explicitly disable DTDs using `dbf.setFeature(\\\"http://apache.org/xml/features/disallow-doctype-decl\\\", true);`.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the flaw in this payment logic.\n\nInput to analyze:\nPOST /buy HTTP/1.1\nitem=book&price=10.00"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Parameter Tampering (Price Manipulation)\", \"explanation\": \"The price is sent from the client side. An attacker can modify it to pay less than the actual value.\", \"example_payload\": \"price=0.01\", \"mitigation\": \"Calculate prices on the server side based on the item ID; do not trust price parameters from the client.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the cookie attributes.\n\nInput to analyze:\nSet-Cookie: session_id=xyz; Expires=Tue, 19 Jan 2038 03:14:07 GMT; Path=/"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Insecure Cookie Configuration\", \"explanation\": \"The cookie lacks `HttpOnly` and `Secure` flags, making it vulnerable to XSS theft and interception over HTTP.\", \"example_payload\": \"document.cookie (accessible via JS)\", \"mitigation\": \"Set `HttpOnly`, `Secure`, and `SameSite` flags on sensitive cookies.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Check the code for command handling.\n\nInput to analyze:\nsystem(\"grep \" . $query . \" files.txt\");"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Command Injection\", \"explanation\": \"The input is directly passed to a system command. Attackers can use delimiters to run extra commands.\", \"example_payload\": \"foo; id\", \"mitigation\": \"Use `escapeshellarg()` in PHP or avoid `system()` entirely.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the LDAP query construction.\n\nInput to analyze:\nquery = \"(&(user=\" + user + \")(pass=\" + pass + \"))\""
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"LDAP Injection\", \"explanation\": \"User input is concatenated into an LDAP filter without sanitization, allowing authentication bypass.\", \"example_payload\": \"*)(uid=*))(|(uid=*\", \"mitigation\": \"Escape special LDAP characters or use a parameterized LDAP interface.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review this API endpoint logic.\n\nInput to analyze:\napp.get('/files', (req, res) => {\n  res.sendFile('/var/www/uploads/' + req.query.name);\n});"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Path Traversal\", \"explanation\": \"The application joins a base path with user input. Attackers can use `../` to escape the uploads directory.\", \"example_payload\": \"../../app.js\", \"mitigation\": \"Sanitize filenames to remove path separators or ensure the resolved path starts with the expected base directory.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this SQL statement.\n\nInput to analyze:\nSELECT * FROM products WHERE name LIKE '%\" + search + \"%'\""
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"SQL Injection (LIKE Clause)\", \"explanation\": \"Even within a LIKE clause, concatenation allows breaking out of the quote syntax.\", \"example_payload\": \"%' AND 1=0 UNION SELECT ... --\", \"mitigation\": \"Use parameterized queries.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the CORS configuration.\n\nInput to analyze:\nAccess-Control-Allow-Origin: *"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Insecure CORS Configuration\", \"explanation\": \"The wildcard `*` allows any site to make requests to this API, potentially leaking sensitive data if authentication is implicit.\", \"example_payload\": \"Origin: http://attacker.com\", \"mitigation\": \"Specify trusted origins explicitly instead of using a wildcard.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the logic regarding HTTP methods.\n\nInput to analyze:\nif ($_SERVER['REQUEST_METHOD'] === 'POST') { // update profile }\n// Missing check for GET/PUT triggers"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"HTTP Verb Tampering\", \"explanation\": \"Security controls might only apply to POST, but the server might process the same logic for GET or PUT.\", \"example_payload\": \"GET /update_profile HTTP/1.1\", \"mitigation\": \"Ensure access controls apply to all HTTP methods or restrict allowed methods strictly.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze this file inclusion logic.\n\nInput to analyze:\ninclude $_COOKIE['lang'] . '.php';"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"LFI via Cookie\", \"explanation\": \"User input from Cookies is treated as trusted for file inclusion.\", \"example_payload\": \"Cookie: lang=../../../../var/log/apache2/access.log%00\", \"mitigation\": \"Validate the cookie value against a whitelist of allowed languages.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the issue in this host header usage.\n\nInput to analyze:\n<link href=\"http://<?php echo $_SERVER['HTTP_HOST']; ?>/style.css\" rel=\"stylesheet\">"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Host Header Injection\", \"explanation\": \"The application trusts the Host header to generate absolute URLs. An attacker can manipulate this to poison caches or password reset links.\", \"example_payload\": \"Host: evil.com\", \"mitigation\": \"Use a fixed configuration value for the domain name instead of relying on the Host header.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review this XPath code.\n\nInput to analyze:\nxpath.evaluate(\"//user[username/text()='\" + user + \"' and password/text()='\" + pass + \"']\", doc)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"XPath Injection\", \"explanation\": \"Similar to SQLi, input concatenation allows altering the structure of the XPath query.\", \"example_payload\": \"' or '1'='1\", \"mitigation\": \"Use parameterized XPath queries or pre-compiled XPath expressions with variable binding.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the JavaScript Object handling.\n\nInput to analyze:\nlet userConfig = JSON.parse(userInput);\nObject.assign(defaultConfig, userConfig);"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Prototype Pollution\", \"explanation\": \"The `__proto__` property in the input can modify the base Object prototype, affecting all objects in the application.\", \"example_payload\": \"{\\\"__proto__\\\": {\\\"isAdmin\\\": true}}\", \"mitigation\": \"Freeze the prototype, use `Object.create(null)`, or sanitize keys to forbid `__proto__`, `constructor`, etc.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this email generation.\n\nInput to analyze:\nsend_email(to, \"Welcome\", \"Hello \" + username + \", click <a href='...'>here</a>\");"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"HTML Injection (Email)\", \"explanation\": \"If the username contains HTML, it will be rendered in the email client, potentially leading to phishing or XSS (in webmail).\", \"example_payload\": \"<h1>Click me</h1>\", \"mitigation\": \"HTML-encode user input before embedding it in email bodies.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the response headers logic.\n\nInput to analyze:\nheader(\"Location: \" . $_GET['url']);"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"HTTP Response Splitting / CRLF Injection\", \"explanation\": \"If the input contains `\\\\r\\\\n`, an attacker can inject arbitrary headers or split the response body.\", \"example_payload\": \"%0d%0aSet-Cookie: session=fixed\", \"mitigation\": \"Strip CR and LF characters from input before using them in HTTP headers.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the behavior of this image processing URL.\n\nInput to analyze:\nGET /resize?img=http://internal-service/image.png HTTP/1.1"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Blind SSRF\", \"explanation\": \"The server fetches an external URL. Even if the response isn't shown, timing or error differences can map internal networks.\", \"example_payload\": \"http://localhost:8080\", \"mitigation\": \"Network segmentation and strict URL validation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the flaw in this random token generation.\n\nInput to analyze:\nsrand(time());\n$token = rand();"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Predictable Random Number Generator\", \"explanation\": \"Seeding the generator with `time()` makes the output predictable if the generation time is known.\", \"example_payload\": \"Brute force seed based on timestamp\", \"mitigation\": \"Use cryptographically secure pseudo-random number generators (CSPRNG) like `random_int()` or `secrets` module.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the debug configuration.\n\nInput to analyze:\nDJANGO_DEBUG = True"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Debug Mode Enabled\", \"explanation\": \"Debug mode exposes detailed stack traces and environment variables upon errors, leaking sensitive info.\", \"example_payload\": \"Trigger an error (e.g., 500) to view stack trace.\", \"mitigation\": \"Ensure debug mode is disabled (`False`) in production environments.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the clickjacking protection.\n\nInput to analyze:\nHTTP/1.1 200 OK\n(Missing X-Frame-Options or CSP frame-ancestors)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Clickjacking\", \"explanation\": \"Without framing restrictions, the site can be loaded in an iframe on an attacker's site to trick users into clicking hidden elements.\", \"example_payload\": \"<iframe src=\\\"target_site\\\" opacity=\\\"0\\\">\", \"mitigation\": \"Set `X-Frame-Options: DENY` or `SAMEORIGIN`, or use Content Security Policy `frame-ancestors`.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the SQL injection type here.\n\nInput to analyze:\nSELECT * FROM users WHERE id = '$id'; -- (Application does not return data, but behaves differently on error)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Error-Based SQL Injection\", \"explanation\": \"The application leaks database error messages to the user, which can be used to extract structure or data.\", \"example_payload\": \"' AND (SELECT 1/0) --\", \"mitigation\": \"Disable verbose error messages in the UI and use parameterized queries.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze the file upload path.\n\nInput to analyze:\ns3_client.upload_file(file, bucket, req.body.username + \"/\" + file.name)"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Path Traversal (S3 Key)\", \"explanation\": \"If the username or filename contains `../`, the file might be overwritten or placed in the wrong S3 folder.\", \"example_payload\": \"username=\\\"../public\\\"\", \"mitigation\": \"Sanitize keys and filenames to ensure they do not contain path traversal sequences.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the regex used for validation.\n\nInput to analyze:\n^(a+)+$"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"ReDoS (Regular Expression Denial of Service)\", \"explanation\": \"The nested quantifiers allow catastrophic backtracking when processing specially crafted strings, causing high CPU usage.\", \"example_payload\": \"aaaaaaaaaaaaaaaaaaaaa!\", \"mitigation\": \"Avoid nested quantifiers or use a regex engine that does not support backtracking (e.g., Re2).\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this password reset flow.\n\nInput to analyze:\nHost: example.com\nPOST /reset_password\nemail=victim@example.com&host=attacker.com"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Password Reset Poisoning\", \"explanation\": \"The application uses the Host header or a parameter to construct the reset link, sending the token to the attacker.\", \"example_payload\": \"http://attacker.com/reset?token=123\", \"mitigation\": \"Use a fixed domain for generating links; ignore user-supplied host headers.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze this smart contract code (Web3 context).\n\nInput to analyze:\nrequire(msg.sender.call.value(amount)());"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Reentrancy Attack\", \"explanation\": \"The contract sends Ether before updating the internal balance, allowing the receiver to call back into the function recursively.\", \"example_payload\": \"Recursive withdraw call in fallback function\", \"mitigation\": \"Use the Checks-Effects-Interactions pattern (update state before external calls).\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the session management.\n\nInput to analyze:\nCookie: session_id=1001"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Predictable Session ID\", \"explanation\": \"The session ID appears to be a sequential integer, allowing attackers to guess valid sessions of other users.\", \"example_payload\": \"session_id=1002\", \"mitigation\": \"Use long, random, alphanumeric session IDs generated by a secure framework.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the flaw in this GraphQL query.\n\nInput to analyze:\nquery { users { posts { comments { author { posts { ... } } } } } }"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"GraphQL Denial of Service (Deep Recursion)\", \"explanation\": \"The query requests deeply nested relationships, potentially exhausting server resources.\", \"example_payload\": \"Deeply nested cyclic query\", \"mitigation\": \"Implement query depth limiting and complexity analysis.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Analyze this Python formatted string.\n\nInput to analyze:\nprint(f\"User input: {user_input}\") # Python 3.6+"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Format String Injection (if evaluated dynamically)\", \"explanation\": \"While f-strings are usually safe, if the format string itself is user-controlled and passed to `eval` or similar, it executes code.\", \"example_payload\": \"{__import__('os').system('id')}\", \"mitigation\": \"Never allow user input to define the format string template itself.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Review the client-side template.\n\nInput to analyze:\n<div ng-app>{{ 7 * 7 }}</div>"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Client-Side Template Injection (CSTI/AngularJS)\", \"explanation\": \"AngularJS evaluates expressions inside curly braces, leading to XSS if user input is reflected there.\", \"example_payload\": \"{{constructor.constructor('alert(1)')()}}\", \"mitigation\": \"Avoid reflecting user input into template expressions; use `ng-non-bindable`.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a cybersecurity expert. \nAnalyze the input and identify the web vulnerability.\nReturn the answer strictly in JSON format with these keys:\n- vulnerability\n- explanation\n- example_payload\n- mitigation\nDo not output any text outside the JSON block."
+      },
+      {
+        "role": "user",
+        "content": "Task: Identify the vulnerability in this serialized object handling.\n\nInput to analyze:\nO:4:\"User\":2:{s:8:\"username\";s:5:\"admin\";s:7:\"isAdmin\";b:1;}"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"vulnerability\": \"Insecure Deserialization (PHP)\", \"explanation\": \"If the application deserializes this string without verification, an attacker can modify properties (like isAdmin).\", \"example_payload\": \"Modify isAdmin to true\", \"mitigation\": \"Do not deserialize untrusted data; use a signature (HMAC) to verify integrity.\"}"
+      }
+    ]
+  }
+]
