@@ -414,3 +414,113 @@ download
 content_copy
 expand_less
 GET /config.php.bak HTTP/1.1
+
+PHẦN 3: Danh sách 10 Safe Case (Code An Toàn) để test
+
+1. SQL Injection (Fixed - Parameterized Query)
+Code này dùng ? hoặc %s để truyền tham số, hacker không thể chèn lệnh SQL.
+
+code
+Python
+user_id = request.args.get('id')
+# Sử dụng placeholder thay vì cộng chuỗi
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+
+2. Command Injection (Fixed - Subprocess List)
+Sử dụng danh sách tham số thay vì chuỗi lệnh shell, ngăn chặn việc chèn ký tự ; hay &&.
+
+code
+Python
+import subprocess
+domain = request.args.get('domain')
+# Không dùng shell=True
+subprocess.run(["ping", "-c", "1", domain])
+
+3. XSS (Fixed - Auto Escaping)
+Các framework như Flask/Jinja2 tự động mã hóa ký tự đặc biệt (như < thành &lt;).\
+code
+Python
+from flask import render_template
+name = request.args.get('name')
+# Jinja2 tự động escape biến name
+return render_template("profile.html", user_name=name)
+
+4. Path Traversal (Fixed - Basename)
+Hàm os.path.basename sẽ cắt bỏ hết các ký tự ../ và đường dẫn thư mục, chỉ lấy tên file.
+
+code
+Python
+import os
+filename = request.args.get('file')
+# Chỉ lấy tên file, loại bỏ đường dẫn
+safe_filename = os.path.basename(filename)
+with open(os.path.join('/var/www/uploads', safe_filename), 'r') as f:
+    data = f.read()
+
+5. SSRF (Fixed - Whitelist)
+Kiểm tra URL có nằm trong danh sách cho phép không trước khi request.
+
+code
+Python
+import requests
+url = request.args.get('url')
+allowed_domains = ['google.com', 'facebook.com']
+
+if any(domain in url for domain in allowed_domains):
+    requests.get(url)
+else:
+    print("Blocked malicious request")
+
+6. Hardcoded Credentials (Fixed - Env Vars)
+Lấy mật khẩu từ biến môi trường thay vì viết cứng trong code.
+
+code
+Python
+import os
+db_password = os.getenv('DB_PASSWORD')
+connect_db(user="admin", password=db_password)
+
+7. XML External Entity (Fixed - Disable DTD)
+Cấu hình parser để từ chối xử lý DTD/Entity bên ngoài.
+
+code
+Java
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+// Tắt tính năng xử lý DTD để chặn XXE
+dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+DocumentBuilder db = dbf.newDocumentBuilder();
+
+8. Insecure Deserialization (Fixed - JSON)
+Dùng JSON thay vì Pickle/Serialize vì JSON chỉ chứa dữ liệu, không chứa code thực thi.
+
+code
+Python
+import json
+data = request.cookies.get('session')
+# JSON an toàn hơn Pickle
+user_data = json.loads(data)
+
+9. Open Redirect (Fixed - Relative Path)
+Chỉ cho phép redirect nếu URL bắt đầu bằng / (nội bộ), không cho ra domain ngoài.
+
+code
+Python
+next_url = request.args.get('next')
+if next_url.startswith('/'):
+    return redirect(next_url)
+else:
+    return redirect('/')
+
+10. File Upload (Fixed - Extension Check)
+Kiểm tra đuôi file và đổi tên file ngẫu nhiên.
+
+code
+PHP
+$target_dir = "uploads/";
+$ext = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+// Chỉ cho phép ảnh
+if($ext == "jpg" || $ext == "png") {
+    // Đổi tên file để tránh ghi đè hoặc thực thi
+    $new_name = uniqid() . "." . $ext;
+    move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $new_name);
+}
